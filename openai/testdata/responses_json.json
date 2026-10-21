@@ -1,0 +1,59 @@
+{
+  "id": "resp_68f7b1000d5f8190e9a4f6d7a8192b3c0aa1b2c3d4e5f6a7",
+  "object": "response",
+  "created_at": 1761039000,
+  "status": "completed",
+  "error": null,
+  "incomplete_details": null,
+  "instructions": null,
+  "max_output_tokens": null,
+  "model": "gpt-5-mini-2025-08-07",
+  "output": [
+    {
+      "id": "rs_68f7b1001e608190fab5a7e8b9203c4d0aa1b2c3d4e5f6a7",
+      "type": "reasoning",
+      "summary": []
+    },
+    {
+      "id": "msg_68f7b1002f718190abc6b8f9c0314d5e0aa1b2c3d4e5f6a7",
+      "type": "message",
+      "status": "completed",
+      "role": "assistant",
+      "content": [
+        {"type": "output_text", "text": "{\"approved\":false,", "annotations": [], "logprobs": []},
+        {"type": "output_text", "text": "\"problems\":[\"The SEB logo is cut off.\"]}", "annotations": [], "logprobs": []}
+      ]
+    }
+  ],
+  "parallel_tool_calls": true,
+  "reasoning": {"effort": "medium", "summary": null},
+  "store": false,
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "image_review",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "approved": {"type": "boolean"},
+          "problems": {"type": "array", "items": {"type": "string"}}
+        },
+        "required": ["approved", "problems"],
+        "additionalProperties": false
+      },
+      "strict": true,
+      "description": null
+    },
+    "verbosity": "medium"
+  },
+  "tool_choice": "auto",
+  "tools": [],
+  "usage": {
+    "input_tokens": 2400,
+    "input_tokens_details": {"cached_tokens": 0},
+    "output_tokens": 900,
+    "output_tokens_details": {"reasoning_tokens": 860},
+    "total_tokens": 3300
+  },
+  "metadata": {}
+}
