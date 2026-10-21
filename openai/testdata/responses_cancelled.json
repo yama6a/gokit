@@ -1,0 +1,17 @@
+{
+  "id": "resp_68f7a4000c4e8190d8f3e5c6f708192a0aa1b2c3d4e5f6a7",
+  "object": "response",
+  "created_at": 1761038640,
+  "status": "cancelled",
+  "error": null,
+  "incomplete_details": null,
+  "model": "gpt-5-mini-2025-08-07",
+  "output": [],
+  "usage": {
+    "input_tokens": 0,
+    "input_tokens_details": {"cached_tokens": 0},
+    "output_tokens": 0,
+    "output_tokens_details": {"reasoning_tokens": 0},
+    "total_tokens": 0
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "error": {
+    "message": "Rate limit reached for gpt-5-mini in organization org-abc123 on tokens per min (TPM): Limit 200000, Used 199100, Requested 2220. Please try again in 396ms.",
+    "type": "tokens",
+    "param": null,
+    "code": "rate_limit_exceeded"
+  }
+}

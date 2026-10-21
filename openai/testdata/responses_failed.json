@@ -1,0 +1,17 @@
+{
+  "id": "resp_68f7a3000b3d8190c7e2d4b5e6f708190aa1b2c3d4e5f6a7",
+  "object": "response",
+  "created_at": 1761038580,
+  "status": "failed",
+  "error": {"code": "server_error", "message": "The model failed to generate a response."},
+  "incomplete_details": null,
+  "model": "gpt-5-mini-2025-08-07",
+  "output": [],
+  "usage": {
+    "input_tokens": 120,
+    "input_tokens_details": {"cached_tokens": 0},
+    "output_tokens": 0,
+    "output_tokens_details": {"reasoning_tokens": 0},
+    "total_tokens": 120
+  }
+}

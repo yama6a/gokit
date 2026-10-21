@@ -1,0 +1,17 @@
+{
+  "created": 1761038700,
+  "background": "opaque",
+  "data": [
+    {"b64_json": "/9j/4GVkaXRlZA=="}
+  ],
+  "output_format": "jpeg",
+  "quality": "high",
+  "size": "1024x1024",
+  "usage": {
+    "input_tokens": 1157,
+    "input_tokens_details": {"image_tokens": 1120, "text_tokens": 37},
+    "output_tokens": 4180,
+    "output_tokens_details": {"image_tokens": 4160, "text_tokens": 20},
+    "total_tokens": 5337
+  }
+}
