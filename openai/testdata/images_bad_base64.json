@@ -1,0 +1,11 @@
+{
+  "created": 1761038760,
+  "data": [{"b64_json": "not base64!"}],
+  "output_format": "png",
+  "usage": {
+    "input_tokens": 50,
+    "input_tokens_details": {"image_tokens": 0, "text_tokens": 50},
+    "output_tokens": 1056,
+    "total_tokens": 1106
+  }
+}

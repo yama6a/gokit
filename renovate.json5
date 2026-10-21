@@ -1,0 +1,8 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "github>yama6a/gha:default.json5",
+    "github>yama6a/gha:go.json5",
+  ],
+  packageRules: [],
+}

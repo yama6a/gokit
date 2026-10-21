@@ -1,0 +1,42 @@
+{
+  "id": "resp_67ccd2bed1ec8190b14f964abc0542670bb6a6b452d3795b",
+  "object": "response",
+  "created_at": 1761038400,
+  "status": "completed",
+  "error": null,
+  "incomplete_details": null,
+  "instructions": "You write short social media posts.",
+  "max_output_tokens": 2000,
+  "model": "gpt-5-mini-2025-08-07",
+  "output": [
+    {
+      "id": "rs_67ccd2bf17f0819081ff3bb2cf6508e60bb6a6b452d3795b",
+      "type": "reasoning",
+      "summary": []
+    },
+    {
+      "id": "msg_67ccd2bf17f0819081ff3bb2cf6508e60bb6a6b452d3795b",
+      "type": "message",
+      "status": "completed",
+      "role": "assistant",
+      "content": [
+        {"type": "output_text", "text": "Autumn light on the fjord. ", "annotations": [], "logprobs": []},
+        {"type": "output_text", "text": "Coffee first, then the hike.", "annotations": [], "logprobs": []}
+      ]
+    }
+  ],
+  "parallel_tool_calls": true,
+  "reasoning": {"effort": "low", "summary": null},
+  "store": false,
+  "text": {"format": {"type": "text"}, "verbosity": "medium"},
+  "tool_choice": "auto",
+  "tools": [],
+  "usage": {
+    "input_tokens": 1800,
+    "input_tokens_details": {"cached_tokens": 1024},
+    "output_tokens": 420,
+    "output_tokens_details": {"reasoning_tokens": 384},
+    "total_tokens": 2220
+  },
+  "metadata": {}
+}

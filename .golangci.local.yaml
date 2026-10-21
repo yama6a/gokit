@@ -1,0 +1,7 @@
+linters:
+  exclusions:
+    rules:
+      # The OpenAI API uses snake_case JSON.
+      - path: (^|/)openai/
+        linters:
+          - tagliatelle
