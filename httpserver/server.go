@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	readHeaderTimeout = 10 * time.Second
-	readyTimeout      = 5 * time.Second
+	defaultReadHeaderTimeout = 10 * time.Second
+	readyTimeout             = 5 * time.Second
 )
 
 // Options configures a Server.
@@ -28,7 +28,17 @@ type Options struct {
 	API http.Handler
 	// DrainTimeout is how long Run waits for in-flight requests after its context ends.
 	DrainTimeout time.Duration
-	Logger       *zap.Logger
+	// ReadHeaderTimeout bounds reading the request headers. Zero means 10 seconds.
+	ReadHeaderTimeout time.Duration
+	// ReadTimeout bounds reading the whole request. Zero means no limit.
+	ReadTimeout time.Duration
+	// WriteTimeout bounds the time from the end of the request headers to the end of the
+	// response. Zero means no limit.
+	WriteTimeout time.Duration
+	// IdleTimeout bounds the wait for the next request on a keep-alive connection. Zero
+	// means ReadTimeout, as in net/http.
+	IdleTimeout time.Duration
+	Logger      *zap.Logger
 }
 
 // Server serves probes, metrics and an API on one address.
@@ -40,6 +50,9 @@ type Server struct {
 func New(opts Options) *Server {
 	if opts.Logger == nil {
 		opts.Logger = zap.NewNop()
+	}
+	if opts.ReadHeaderTimeout == 0 {
+		opts.ReadHeaderTimeout = defaultReadHeaderTimeout
 	}
 
 	return &Server{opts: opts}
@@ -83,6 +96,16 @@ func orNotFound(h http.Handler) http.Handler {
 	return h
 }
 
+func (s *Server) httpServer() *http.Server {
+	return &http.Server{
+		Handler:           s.Handler(),
+		ReadHeaderTimeout: s.opts.ReadHeaderTimeout,
+		ReadTimeout:       s.opts.ReadTimeout,
+		WriteTimeout:      s.opts.WriteTimeout,
+		IdleTimeout:       s.opts.IdleTimeout,
+	}
+}
+
 // Run serves until ctx ends, then drains in-flight requests for DrainTimeout.
 // It returns nil after a clean drain.
 func (s *Server) Run(ctx context.Context) error {
@@ -96,10 +119,7 @@ func (s *Server) Run(ctx context.Context) error {
 		}
 	}
 
-	srv := &http.Server{
-		Handler:           s.Handler(),
-		ReadHeaderTimeout: readHeaderTimeout,
-	}
+	srv := s.httpServer()
 
 	errCh := make(chan error, 1)
 

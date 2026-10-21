@@ -15,6 +15,8 @@ var (
 	ErrIncomplete = errors.New("openai: response incomplete")
 	// ErrFailed is returned when a response ends in a status other than completed or incomplete.
 	ErrFailed = errors.New("openai: response failed")
+	// ErrInvalidRequest is returned before any call when a Request is inconsistent.
+	ErrInvalidRequest = errors.New("openai: invalid request")
 	// ErrImageCount is returned when the API returns another number of images than requested.
 	ErrImageCount = errors.New("openai: unexpected image count")
 )
