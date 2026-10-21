@@ -15,7 +15,17 @@ type Policy struct {
 	Attempts int
 	Base     time.Duration
 	Max      time.Duration
-	RetryOn  func(*http.Response, error) bool
+	// Delays, when set, replaces the jittered backoff: retry n waits Delays[n-1], the last
+	// entry repeats, and Attempts 0 means len(Delays)+1.
+	Delays  []time.Duration
+	RetryOn func(*http.Response, error) bool
+}
+
+func (p Policy) attempts() int {
+	if p.Attempts == 0 && len(p.Delays) > 0 {
+		return len(p.Delays) + 1
+	}
+	return p.Attempts
 }
 
 type policyKey struct{}

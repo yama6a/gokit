@@ -67,7 +67,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	ctx := req.Context()
 	for attempt := 1; ; attempt++ {
 		resp, err := t.base.RoundTrip(req)
-		if attempt >= p.Attempts || ctx.Err() != nil || !retryOn(resp, err) {
+		if attempt >= p.attempts() || ctx.Err() != nil || !retryOn(resp, err) {
 			return resp, err //nolint:wrapcheck // a RoundTripper passes transport errors through unchanged
 		}
 		wait := t.backoff(p, attempt, resp)
@@ -87,7 +87,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 // policyFor reports whether req may be tried more than once. A body that cannot be replayed allows one attempt.
 func policyFor(req *http.Request) (Policy, bool) {
 	p, ok := PolicyFrom(req.Context())
-	if !ok || p.Attempts <= 1 {
+	if !ok || p.attempts() <= 1 {
 		return Policy{}, false
 	}
 	if req.Body != nil && req.Body != http.NoBody && req.GetBody == nil {
@@ -117,6 +117,9 @@ func (t *Transport) backoff(p Policy, attempt int, resp *http.Response) time.Dur
 			}
 			return d
 		}
+	}
+	if len(p.Delays) > 0 {
+		return p.Delays[min(attempt, len(p.Delays))-1]
 	}
 	ceiling := p.Base
 	for i := 1; i < attempt && (p.Max <= 0 || ceiling < p.Max); i++ {
