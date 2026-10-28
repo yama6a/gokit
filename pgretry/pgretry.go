@@ -24,11 +24,15 @@ const (
 	budget   = 15 * time.Second
 	baseWait = 250 * time.Millisecond
 	maxWait  = 2 * time.Second
+
+	cannotConnectNow = "57P03"
 )
 
 // Open returns a *sql.DB on the pgx stdlib driver for dsn.
 // A new connection retries a failed dial for up to 15 seconds, or until its context ends,
 // and logs each failure at WARN. It never retries once a statement may have reached the server.
+// A server error such as a wrong password fails at once, except 57P03 cannot_connect_now,
+// which a starting server returns.
 func Open(dsn string, log *zap.Logger) (*sql.DB, error) {
 	cfg, err := pgx.ParseConfig(dsn)
 	if err != nil {
@@ -53,7 +57,7 @@ func (c *connector) Connect(ctx context.Context) (driver.Conn, error) {
 	deadline := c.now().Add(budget)
 	for attempt := 1; ; attempt++ {
 		conn, err := c.Connector.Connect(ctx)
-		if err == nil || ctx.Err() != nil || !dialFailed(err) {
+		if err == nil || ctx.Err() != nil || !retryable(err) {
 			return conn, err //nolint:wrapcheck // database/sql inspects driver errors, so they pass through unchanged
 		}
 		wait := time.Duration(c.jitter() * float64(backoff.Ceiling(baseWait, maxWait, attempt)))
@@ -68,7 +72,11 @@ func (c *connector) Connect(ctx context.Context) (driver.Conn, error) {
 	}
 }
 
-func dialFailed(err error) bool {
+func retryable(err error) bool {
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) {
+		return pgErr.Code == cannotConnectNow
+	}
 	var connectErr *pgconn.ConnectError
 	return errors.As(err, &connectErr) || pgconn.SafeToRetry(err)
 }

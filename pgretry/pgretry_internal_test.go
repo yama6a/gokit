@@ -10,6 +10,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgproto3"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -86,6 +87,43 @@ func refusedDialError(t *testing.T) error {
 	return err //nolint:wrapcheck // test helper
 }
 
+// rejectingDSN returns a DSN for a local server that answers every startup with SQLSTATE code.
+func rejectingDSN(t *testing.T, code string) string {
+	t.Helper()
+	ln, err := (&net.ListenConfig{}).Listen(t.Context(), "tcp", "127.0.0.1:0")
+	require.NoError(t, err)
+	t.Cleanup(func() { _ = ln.Close() })
+	go func() {
+		for {
+			conn, err := ln.Accept()
+			if err != nil {
+				return
+			}
+			be := pgproto3.NewBackend(conn, conn)
+			if _, err := be.ReceiveStartupMessage(); err == nil {
+				be.Send(&pgproto3.ErrorResponse{Severity: "FATAL", Code: code, Message: "rejected"})
+				_ = be.Flush()
+			}
+			_ = conn.Close()
+		}
+	}()
+	return "postgres://app@" + ln.Addr().String() + "/app?sslmode=disable&connect_timeout=1"
+}
+
+// serverError returns the error pgx reports when the server rejects the startup with SQLSTATE code.
+func serverError(t *testing.T, code string) error {
+	t.Helper()
+	cfg, err := pgx.ParseConfig(rejectingDSN(t, code))
+	require.NoError(t, err)
+	_, err = stdlib.GetConnector(*cfg).Connect(t.Context())
+	var connectErr *pgconn.ConnectError
+	require.ErrorAs(t, err, &connectErr)
+	var pgErr *pgconn.PgError
+	require.ErrorAs(t, err, &pgErr)
+	require.Equal(t, code, pgErr.Code)
+	return err //nolint:wrapcheck // test helper
+}
+
 func TestConnect_RetriesThenSucceeds(t *testing.T) {
 	t.Parallel()
 
@@ -96,6 +134,7 @@ func TestConnect_RetriesThenSucceeds(t *testing.T) {
 	}{
 		{name: "connect error", err: dialErr},
 		{name: "safe to retry", err: safeToRetryError{}},
+		{name: "server starting up", err: serverError(t, "57P03")},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -140,6 +179,8 @@ func TestConnect_NoRetryAfterOtherErrors(t *testing.T) {
 		name string
 		err  error
 	}{
+		{name: "wrong password", err: serverError(t, "28P01")},
+		{name: "database missing", err: serverError(t, "3D000")},
 		{name: "server error", err: &pgconn.PgError{Code: "42601"}},
 		{name: "plain error", err: errors.New("tls handshake")},
 	}
