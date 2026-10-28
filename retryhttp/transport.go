@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/yama6a/gokit/internal/backoff"
 )
 
 const drainLimit = 64 << 10
@@ -46,7 +48,7 @@ func New(base http.RoundTripper, opts ...Option) *Transport {
 	if base == nil {
 		base = http.DefaultTransport
 	}
-	t := &Transport{base: base, now: time.Now, sleep: sleep, jitter: rand.Float64}
+	t := &Transport{base: base, now: time.Now, sleep: backoff.Sleep, jitter: rand.Float64}
 	for _, o := range opts {
 		o(t)
 	}
@@ -121,14 +123,7 @@ func (t *Transport) backoff(p Policy, attempt int, resp *http.Response) time.Dur
 	if len(p.Delays) > 0 {
 		return p.Delays[min(attempt, len(p.Delays))-1]
 	}
-	ceiling := p.Base
-	for i := 1; i < attempt && (p.Max <= 0 || ceiling < p.Max); i++ {
-		ceiling *= 2
-	}
-	if p.Max > 0 {
-		ceiling = min(ceiling, p.Max)
-	}
-	return time.Duration(t.jitter() * float64(ceiling))
+	return time.Duration(t.jitter() * float64(backoff.Ceiling(p.Base, p.Max, attempt)))
 }
 
 func (t *Transport) retryAfter(v string) (time.Duration, bool) {
@@ -139,15 +134,4 @@ func (t *Transport) retryAfter(v string) (time.Duration, bool) {
 		return max(0, at.Sub(t.now())), true
 	}
 	return 0, false
-}
-
-func sleep(ctx context.Context, d time.Duration) error {
-	timer := time.NewTimer(d)
-	defer timer.Stop()
-	select {
-	case <-ctx.Done():
-		return ctx.Err() //nolint:wrapcheck // RoundTrip adds the context
-	case <-timer.C:
-		return nil
-	}
 }
