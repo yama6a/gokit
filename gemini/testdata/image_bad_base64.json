@@ -1,0 +1,7 @@
+{
+  "id": "v1_bad",
+  "model": "gemini-nano-banana-2.1",
+  "status": "completed",
+  "steps": [{"type": "model_output", "content": [{"type": "image", "mime_type": "image/jpeg", "data": "not base64!"}]}],
+  "usage": {"total_input_tokens": 120, "total_cached_tokens": 0, "total_output_tokens": 1680, "output_tokens_by_modality": [{"modality": "image", "tokens": 1680}], "total_thought_tokens": 0}
+}

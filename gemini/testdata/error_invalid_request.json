@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "The value 'x' is not supported for 'type' at 'input[0]'."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "v1_ChdPU0F4YWFtNkFwS2kxZThQZ05lbXdROBIX",
+  "object": "interaction",
+  "model": "gemini-4-argon",
+  "status": "completed",
+  "created": "2026-10-30T12:22:47Z",
+  "updated": "2026-10-30T12:22:51Z",
+  "steps": [
+    {"type": "thought", "signature": "c2lnbmF0dXJl", "summary": [{"type": "text", "text": "Planning a short post."}]},
+    {"type": "model_output", "content": [{"type": "text", "text": "{\"text\":\"Riksbanken sänker räntan\","}, {"type": "text", "text": "\"topicTag\":\"ränta\"}"}]}
+  ],
+  "usage": {
+    "input_tokens_by_modality": [{"modality": "text", "tokens": 1500}],
+    "total_input_tokens": 1500,
+    "total_cached_tokens": 1000,
+    "total_output_tokens": 200,
+    "output_tokens_by_modality": [{"modality": "text", "tokens": 200}],
+    "total_thought_tokens": 300,
+    "total_tokens": 2000,
+    "total_tool_use_tokens": 0
+  }
+}

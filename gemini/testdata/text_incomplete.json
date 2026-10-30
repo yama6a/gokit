@@ -1,0 +1,8 @@
+{
+  "id": "v1_incomplete",
+  "model": "gemini-4-argon",
+  "status": "incomplete",
+  "steps": [{"type": "model_output", "content": [{"type": "text", "text": "Riksbanken sänker"}]}],
+  "errors": [{"code": "max_tokens", "message": "The output reached the token limit."}],
+  "usage": {"total_input_tokens": 100, "total_cached_tokens": 0, "total_output_tokens": 50, "total_thought_tokens": 0}
+}
