@@ -1,0 +1,17 @@
+{
+  "id": "v1_image",
+  "model": "gemini-nano-banana-2.1",
+  "status": "completed",
+  "steps": [
+    {"type": "thought", "summary": [{"type": "text", "text": "Drafting the layout."}, {"type": "image", "mime_type": "image/jpeg", "data": "ZHJhZnQ="}]},
+    {"type": "model_output", "content": [{"type": "text", "text": "Here is the image."}, {"type": "image", "mime_type": "image/jpeg", "data": "/9j/ZmluYWw="}]}
+  ],
+  "usage": {
+    "total_input_tokens": 2340,
+    "input_tokens_by_modality": [{"modality": "text", "tokens": 100}, {"modality": "image", "tokens": 2240}],
+    "total_cached_tokens": 0,
+    "total_output_tokens": 1700,
+    "output_tokens_by_modality": [{"modality": "text", "tokens": 20}, {"modality": "image", "tokens": 1680}],
+    "total_thought_tokens": 400
+  }
+}

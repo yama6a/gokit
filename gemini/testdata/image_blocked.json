@@ -1,0 +1,8 @@
+{
+  "id": "v1_blocked",
+  "model": "gemini-nano-banana-2.1",
+  "status": "failed",
+  "steps": [],
+  "errors": [{"code": "image_safety", "message": "Safety violations blocked image generation."}],
+  "usage": {"total_input_tokens": 120, "total_cached_tokens": 0, "total_output_tokens": 0, "total_thought_tokens": 0}
+}
