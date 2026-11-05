@@ -83,6 +83,26 @@ func TestClient_Respond(t *testing.T) {
 			req:      TextRequest{Model: "gemini-4-argon", Input: "A post about the Riksbank."},
 			wantBody: `{"model": "gemini-4-argon", "input": "A post about the Riksbank.", "store": false}`,
 		},
+		{
+			name: "images by uri",
+			req: TextRequest{
+				Model: "gemini-4-argon",
+				Input: "Describe the photos.",
+				Images: []ImageRef{
+					{URI: "https://media.example.com/a.jpg", MimeType: "image/jpeg"},
+					{URI: "https://media.example.com/b.png", MimeType: "image/png"},
+				},
+			},
+			wantBody: `{
+				"model": "gemini-4-argon",
+				"input": [
+					{"type": "text", "text": "Describe the photos."},
+					{"type": "image", "uri": "https://media.example.com/a.jpg", "mime_type": "image/jpeg"},
+					{"type": "image", "uri": "https://media.example.com/b.png", "mime_type": "image/png"}
+				],
+				"store": false
+			}`,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

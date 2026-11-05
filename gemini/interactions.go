@@ -15,6 +15,8 @@ type TextRequest struct {
 	Model             string
 	SystemInstruction string
 	Input             string
+	// Images are sent by URI after Input. The URI must be one the Google servers can fetch.
+	Images []ImageRef
 	// Schema, when set, makes the model answer with JSON that matches it.
 	Schema any
 }
@@ -29,6 +31,12 @@ type ImageRequest struct {
 	AspectRatio string
 	// ImageSize is "1K", "2K" or "4K". Empty leaves the API default of 1K.
 	ImageSize string
+}
+
+// ImageRef points at an image by URI.
+type ImageRef struct {
+	URI      string
+	MimeType string
 }
 
 // InlineImage is an encoded image with its MIME type.
@@ -76,6 +84,7 @@ type content struct {
 	Type     string `json:"type"`
 	Text     string `json:"text,omitempty"`
 	Data     string `json:"data,omitempty"`
+	URI      string `json:"uri,omitempty"`
 	MimeType string `json:"mime_type,omitempty"`
 }
 
@@ -126,6 +135,14 @@ type interaction struct {
 // returns the Response, so the caller can record the usage and cost of the call.
 func (c *Client) Respond(ctx context.Context, req TextRequest) (Response, error) {
 	payload := interactionRequest{Model: req.Model, Input: req.Input, SystemInstruction: req.SystemInstruction}
+	if len(req.Images) > 0 {
+		parts := make([]content, 0, len(req.Images)+1)
+		parts = append(parts, content{Type: "text", Text: req.Input})
+		for _, img := range req.Images {
+			parts = append(parts, content{Type: "image", URI: img.URI, MimeType: img.MimeType})
+		}
+		payload.Input = parts
+	}
 	if req.Schema != nil {
 		payload.ResponseFormat = &responseFormat{Type: "text", MimeType: "application/json", Schema: req.Schema}
 	}
