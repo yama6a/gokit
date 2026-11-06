@@ -15,8 +15,8 @@ type TextRequest struct {
 	Model             string
 	SystemInstruction string
 	Input             string
-	// Images are sent by URI after Input. The URI must be one the Google servers can fetch.
-	Images []ImageRef
+	// Images are sent inline after Input.
+	Images []InlineImage
 	// Schema, when set, makes the model answer with JSON that matches it.
 	Schema any
 }
@@ -31,12 +31,6 @@ type ImageRequest struct {
 	AspectRatio string
 	// ImageSize is "1K", "2K" or "4K". Empty leaves the API default of 1K.
 	ImageSize string
-}
-
-// ImageRef points at an image by URI.
-type ImageRef struct {
-	URI      string
-	MimeType string
 }
 
 // InlineImage is an encoded image with its MIME type.
@@ -84,8 +78,11 @@ type content struct {
 	Type     string `json:"type"`
 	Text     string `json:"text,omitempty"`
 	Data     string `json:"data,omitempty"`
-	URI      string `json:"uri,omitempty"`
 	MimeType string `json:"mime_type,omitempty"`
+}
+
+func imageContent(img InlineImage) content {
+	return content{Type: "image", MimeType: img.MimeType, Data: base64.StdEncoding.EncodeToString(img.Data)}
 }
 
 type responseFormat struct {
@@ -139,7 +136,7 @@ func (c *Client) Respond(ctx context.Context, req TextRequest) (Response, error)
 		parts := make([]content, 0, len(req.Images)+1)
 		parts = append(parts, content{Type: "text", Text: req.Input})
 		for _, img := range req.Images {
-			parts = append(parts, content{Type: "image", URI: img.URI, MimeType: img.MimeType})
+			parts = append(parts, imageContent(img))
 		}
 		payload.Input = parts
 	}
@@ -173,11 +170,7 @@ func (c *Client) GenerateImage(ctx context.Context, req ImageRequest) (ImageResu
 	input := make([]content, 0, len(req.References)+1)
 	input = append(input, content{Type: "text", Text: req.Prompt})
 	for _, ref := range req.References {
-		input = append(input, content{
-			Type:     "image",
-			MimeType: ref.MimeType,
-			Data:     base64.StdEncoding.EncodeToString(ref.Data),
-		})
+		input = append(input, imageContent(ref))
 	}
 	payload := interactionRequest{
 		Model: req.Model,
