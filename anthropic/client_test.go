@@ -99,17 +99,17 @@ func TestClient_Respond(t *testing.T) {
 			}`,
 		},
 		{
-			name: "two image urls",
+			name: "two images",
 			req: Request{
 				Model: "claude-sonnet-5-5", Prompt: "Describe the photos.", MaxTokens: 16000,
-				ImageURLs: []string{"https://media.example.com/a.jpg", "https://media.example.com/b.png"},
+				Images: []Image{{MimeType: "image/jpeg", Data: []byte("one")}, {MimeType: "image/png", Data: []byte("two")}},
 			},
 			wantBody: `{
 				"model": "claude-sonnet-5-5",
 				"max_tokens": 16000,
 				"messages": [{"role": "user", "content": [
-					{"type": "image", "source": {"type": "url", "url": "https://media.example.com/a.jpg"}},
-					{"type": "image", "source": {"type": "url", "url": "https://media.example.com/b.png"}},
+					{"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": "b25l"}},
+					{"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": "dHdv"}},
 					{"type": "text", "text": "Describe the photos."}
 				]}]
 			}`,

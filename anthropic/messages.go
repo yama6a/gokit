@@ -2,6 +2,7 @@ package anthropic
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"strings"
 )
@@ -11,14 +12,20 @@ type Request struct {
 	Model  string
 	System string
 	Prompt string
-	// ImageURLs are sent before Prompt, in order. Each URL must be one the Claude servers can fetch.
-	ImageURLs []string
+	// Images are sent before Prompt, in order.
+	Images []Image
 	// Schema, when set, makes the model answer with JSON that matches it.
 	Schema any
 	// MaxTokens caps the answer and the thinking together. The API requires it.
 	MaxTokens int
 	// Effort is low, medium, high, xhigh or max.
 	Effort string
+}
+
+// Image is an encoded image with its MIME type.
+type Image struct {
+	MimeType string
+	Data     []byte
 }
 
 // Usage counts the tokens of one call. OutputTokens includes thinking.
@@ -59,8 +66,9 @@ type contentBlock struct {
 }
 
 type imageSource struct {
-	Type string `json:"type"`
-	URL  string `json:"url"`
+	Type      string `json:"type"`
+	MediaType string `json:"media_type"`
+	Data      string `json:"data"`
 }
 
 type outputConfig struct {
@@ -94,9 +102,10 @@ type messageResponse struct {
 // Respond sends req. On ErrIncomplete and ErrRefused it still returns the Response, so the
 // caller can record the usage and cost of the call.
 func (c *Client) Respond(ctx context.Context, req Request) (Response, error) {
-	content := make([]contentBlock, 0, len(req.ImageURLs)+1)
-	for _, u := range req.ImageURLs {
-		content = append(content, contentBlock{Type: "image", Source: &imageSource{Type: "url", URL: u}})
+	content := make([]contentBlock, 0, len(req.Images)+1)
+	for _, img := range req.Images {
+		source := &imageSource{Type: "base64", MediaType: img.MimeType, Data: base64.StdEncoding.EncodeToString(img.Data)}
+		content = append(content, contentBlock{Type: "image", Source: source})
 	}
 	content = append(content, contentBlock{Type: "text", Text: req.Prompt})
 
