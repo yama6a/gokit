@@ -1,0 +1,10 @@
+{
+  "id": "msg_1", "type": "message", "role": "assistant", "model": "claude-sonnet-5-5",
+  "content": [
+    {"type": "thinking", "thinking": "", "signature": "c2ln"},
+    {"type": "text", "text": "{\"text\":\"Riksbanken "},
+    {"type": "text", "text": "sänker räntan\"}"}
+  ],
+  "stop_reason": "end_turn", "stop_details": null,
+  "usage": {"input_tokens": 1500, "output_tokens": 200}
+}
