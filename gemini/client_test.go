@@ -84,21 +84,21 @@ func TestClient_Respond(t *testing.T) {
 			wantBody: `{"model": "gemini-4-argon", "input": "A post about the Riksbank.", "store": false}`,
 		},
 		{
-			name: "images by uri",
+			name: "inline images",
 			req: TextRequest{
 				Model: "gemini-4-argon",
 				Input: "Describe the photos.",
-				Images: []ImageRef{
-					{URI: "https://media.example.com/a.jpg", MimeType: "image/jpeg"},
-					{URI: "https://media.example.com/b.png", MimeType: "image/png"},
+				Images: []InlineImage{
+					{MimeType: "image/jpeg", Data: []byte("first")},
+					{MimeType: "image/png", Data: []byte("second")},
 				},
 			},
 			wantBody: `{
 				"model": "gemini-4-argon",
 				"input": [
 					{"type": "text", "text": "Describe the photos."},
-					{"type": "image", "uri": "https://media.example.com/a.jpg", "mime_type": "image/jpeg"},
-					{"type": "image", "uri": "https://media.example.com/b.png", "mime_type": "image/png"}
+					{"type": "image", "data": "Zmlyc3Q=", "mime_type": "image/jpeg"},
+					{"type": "image", "data": "c2Vjb25k", "mime_type": "image/png"}
 				],
 				"store": false
 			}`,
