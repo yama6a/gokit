@@ -1,0 +1,7 @@
+{
+  "id": "msg_2", "type": "message", "role": "assistant", "model": "claude-sonnet-5-5",
+  "content": [{"type": "text", "text": "partial"}],
+  "stop_reason": "refusal",
+  "stop_details": {"type": "refusal", "category": "general_harms", "explanation": "The request asks for harmful content."},
+  "usage": {"input_tokens": 100, "output_tokens": 50}
+}

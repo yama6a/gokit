@@ -1,0 +1,6 @@
+{
+  "id": "msg_5", "type": "message", "role": "assistant", "model": "claude-sonnet-5-5",
+  "content": [{"type": "text", "text": "{\"text\":\"Riksbanken"}],
+  "stop_reason": "model_context_window_exceeded", "stop_details": null,
+  "usage": {"input_tokens": 100, "output_tokens": 50}
+}
