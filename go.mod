@@ -4,7 +4,7 @@ go 1.27.4
 
 require (
 	github.com/go-chi/chi/v5 v5.5.0
-	github.com/jackc/pgx/v5 v5.12.0
+	github.com/jackc/pgx/v5 v5.13.0
 	github.com/stretchr/testify v1.12.1
 	go.uber.org/zap v1.28.0
 )
