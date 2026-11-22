@@ -166,11 +166,12 @@ func TestClient_GenerateImage(t *testing.T) {
 	c, reqs := newTestClient(t, http.StatusOK, fixture(t, "image_completed.json"))
 
 	got, err := c.GenerateImage(context.Background(), ImageRequest{
-		Model:       "gemini-nano-banana-2.1",
-		Prompt:      "A chart of the policy rate.",
-		References:  []InlineImage{{MimeType: "image/png", Data: []byte("logo")}},
-		AspectRatio: "16:9",
-		ImageSize:   "2K",
+		Model:         "gemini-nano-banana-2.1",
+		Prompt:        "A chart of the policy rate.",
+		References:    []InlineImage{{MimeType: "image/png", Data: []byte("logo")}},
+		AspectRatio:   "16:9",
+		ImageSize:     "2K",
+		ThinkingLevel: "high",
 	})
 	require.NoError(t, err)
 
@@ -182,6 +183,7 @@ func TestClient_GenerateImage(t *testing.T) {
 			{"type": "image", "mime_type": "image/png", "data": "bG9nbw=="}
 		],
 		"response_format": {"type": "image", "mime_type": "image/jpeg", "aspect_ratio": "16:9", "image_size": "2K"},
+		"generation_config": {"thinking_level": "high"},
 		"store": false
 	}`, string(req.Body))
 

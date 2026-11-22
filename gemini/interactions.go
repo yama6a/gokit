@@ -31,6 +31,9 @@ type ImageRequest struct {
 	AspectRatio string
 	// ImageSize is "1K", "2K" or "4K". Empty leaves the API default of 1K.
 	ImageSize string
+	// ThinkingLevel is sent as generation_config.thinking_level, for example "minimal" or "high". Each model takes
+	// its own set of levels. Empty leaves the model default.
+	ThinkingLevel string
 }
 
 // InlineImage is an encoded image with its MIME type.
@@ -93,12 +96,17 @@ type responseFormat struct {
 	ImageSize   string `json:"image_size,omitempty"`
 }
 
+type generationConfig struct {
+	ThinkingLevel string `json:"thinking_level,omitempty"`
+}
+
 type interactionRequest struct {
-	Model             string          `json:"model"`
-	Input             any             `json:"input"`
-	SystemInstruction string          `json:"system_instruction,omitempty"`
-	ResponseFormat    *responseFormat `json:"response_format,omitempty"`
-	Store             bool            `json:"store"`
+	Model             string           `json:"model"`
+	Input             any              `json:"input"`
+	SystemInstruction string           `json:"system_instruction,omitempty"`
+	ResponseFormat    *responseFormat  `json:"response_format,omitempty"`
+	GenerationConfig  generationConfig `json:"generation_config,omitzero"`
+	Store             bool             `json:"store"`
 }
 
 type modalityTokens struct {
@@ -181,6 +189,7 @@ func (c *Client) GenerateImage(ctx context.Context, req ImageRequest) (ImageResu
 			AspectRatio: req.AspectRatio,
 			ImageSize:   req.ImageSize,
 		},
+		GenerationConfig: generationConfig{ThinkingLevel: req.ThinkingLevel},
 	}
 	var r interaction
 	if err := c.postJSON(ctx, "/interactions", payload, &r); err != nil {
