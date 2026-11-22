@@ -365,6 +365,7 @@ func TestClient_GenerateImages(t *testing.T) {
 		N:            2,
 		Background:   "opaque",
 		OutputFormat: "png",
+		Complexity:   "low",
 	})
 	require.NoError(t, err)
 	require.Equal(t, ImageResult{
@@ -392,8 +393,19 @@ func TestClient_GenerateImages(t *testing.T) {
 		"size": "1536x1024",
 		"quality": "medium",
 		"background": "opaque",
-		"output_format": "png"
+		"output_format": "png",
+		"complexity": "low"
 	}`, string(r.Body))
+}
+
+func TestClient_GenerateImagesOmitsEmptyFields(t *testing.T) {
+	t.Parallel()
+	c, reqs := newTestClient(t, http.StatusOK, fixture(t, "images_generate.json"))
+
+	_, err := c.GenerateImages(t.Context(), ImageRequest{Model: "gpt-image-1", Prompt: "Brighter"})
+	require.ErrorIs(t, err, ErrImageCount)
+
+	require.JSONEq(t, `{"model": "gpt-image-1", "prompt": "Brighter"}`, string((<-reqs).Body))
 }
 
 type formPart struct {
@@ -436,6 +448,7 @@ func TestClient_EditImages(t *testing.T) {
 			N:            1,
 			Background:   "opaque",
 			OutputFormat: "jpeg",
+			Complexity:   "medium",
 		},
 		Images: []NamedImage{
 			{Name: "mug.png", MimeType: "image/png", Data: []byte("mug-bytes")},
@@ -471,6 +484,7 @@ func TestClient_EditImages(t *testing.T) {
 		{FormName: "quality", Data: "high"},
 		{FormName: "background", Data: "opaque"},
 		{FormName: "output_format", Data: "jpeg"},
+		{FormName: "complexity", Data: "medium"},
 		{FormName: "image[]", FileName: "mug.png", ContentType: "image/png", Data: "mug-bytes"},
 		{FormName: "image[]", FileName: `boat "deck".webp`, ContentType: "image/webp", Data: "boat-bytes"},
 		{FormName: "image[]", FileName: "raw", ContentType: "application/octet-stream", Data: "raw-bytes"},

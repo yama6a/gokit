@@ -23,6 +23,8 @@ type ImageRequest struct {
 	Background string
 	// OutputFormat is "png", "jpeg" or "webp". The API default is png.
 	OutputFormat string
+	// Complexity is "low", "medium" or "high". Empty leaves the model default.
+	Complexity string
 }
 
 // ImageEditRequest asks for new images drawn from the prompt and the reference Images.
@@ -69,6 +71,7 @@ type imageGenerateRequest struct {
 	Quality      string `json:"quality,omitempty"`
 	Background   string `json:"background,omitempty"`
 	OutputFormat string `json:"output_format,omitempty"`
+	Complexity   string `json:"complexity,omitempty"`
 }
 
 type tokenDetails struct {
@@ -99,6 +102,7 @@ func (c *Client) GenerateImages(ctx context.Context, req ImageRequest) (ImageRes
 		Quality:      req.Quality,
 		Background:   req.Background,
 		OutputFormat: req.OutputFormat,
+		Complexity:   req.Complexity,
 	}
 	var r imagesResponse
 	if err := c.postJSON(ctx, "/images/generations", payload, &r); err != nil {
@@ -168,6 +172,7 @@ func imageEditBody(req ImageEditRequest) ([]byte, string) {
 		{"quality", req.Quality},
 		{"background", req.Background},
 		{"output_format", req.OutputFormat},
+		{"complexity", req.Complexity},
 	}
 	for _, f := range fields {
 		if f.value != "" {
