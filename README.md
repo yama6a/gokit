@@ -14,7 +14,7 @@ go get github.com/yama6a/gokit@latest
 | `anthropic` | Claude client on `net/http`: Messages API for text with JSON schema output and inline image input, usage and cost per call. |
 | `pgretry` | `*sql.DB` on the pgx driver that retries a failed dial for up to 15 s, for example while a CloudNativePG switchover has no primary. Never retries once a statement may have reached the server. |
 | `zapx` | zap cores: one redacts secret fields, one mirrors entries into a store such as a database table. |
-| `httpserver` | Root mux with `/healthz`, `/readyz` and `/metrics`, request middleware, bearer auth, RFC 9457 problems, server timeouts, graceful shutdown. |
+| `httpserver` | Root mux with `/healthz`, `/readyz` and `/metrics`, request middleware, bearer auth, RFC 9457 problems with an optional code, server timeouts, graceful shutdown. |
 | `secretbox` | AES-256-GCM seal and open with a base64 32-byte key. |
 
 - No package holds global state. Every constructor takes its dependencies, including the logger.
