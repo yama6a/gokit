@@ -16,6 +16,7 @@ go get github.com/yama6a/gokit@latest
 | `zapx` | zap cores: one redacts secret fields, one mirrors entries into a store such as a database table. |
 | `httpserver` | Root mux with `/healthz`, `/readyz` and `/metrics`, request middleware, bearer auth, RFC 9457 problems with an optional code, server timeouts, graceful shutdown. |
 | `secretbox` | AES-256-GCM seal and open with a base64 32-byte key. |
+| `googleid` | Verifies a Google ID token: signature, issuer, audience, expiry and a verified email. |
 
 - No package holds global state. Every constructor takes its dependencies, including the logger.
 - `openai`, `gemini` and `anthropic` do not retry. Give them an `*http.Client` whose transport is `retryhttp`.
