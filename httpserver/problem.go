@@ -12,6 +12,8 @@ type Problem struct {
 	Status   int    `json:"status"`
 	Detail   string `json:"detail,omitempty"`
 	Instance string `json:"instance,omitempty"`
+	// Code is an RFC 9457 extension member that names the cause for a client.
+	Code string `json:"code,omitempty"`
 }
 
 // WriteProblem writes p as application/problem+json.

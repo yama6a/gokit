@@ -28,11 +28,11 @@ func TestWriteProblem(t *testing.T) {
 			name: "all fields",
 			in: httpserver.Problem{
 				Type: "https://example.com/probs/out-of-credit", Title: "Out of credit", Status: http.StatusForbidden,
-				Detail: "balance is 30", Instance: "/account/12345",
+				Detail: "balance is 30", Instance: "/account/12345", Code: "out_of_credit",
 			},
 			want: httpserver.Problem{
 				Type: "https://example.com/probs/out-of-credit", Title: "Out of credit", Status: http.StatusForbidden,
-				Detail: "balance is 30", Instance: "/account/12345",
+				Detail: "balance is 30", Instance: "/account/12345", Code: "out_of_credit",
 			},
 		},
 		{
